@@ -1,6 +1,8 @@
-# Tauri + React + Typescript
+# hello-tauri
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+CI example repo for React + Tauri + Java project.
+
+See [Actions:release](https://github.com/iXanadu13/hello-tauri/actions/workflows/release.yml), [Actions:nightly](https://github.com/iXanadu13/hello-tauri/actions/workflows/nightly.yml) and [Releases](https://github.com/iXanadu13/hello-tauri/releases).
 
 ## Recommended IDE Setup
 
