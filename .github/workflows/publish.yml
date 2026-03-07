@@ -15,7 +15,7 @@ on:
         type: string
         description: The name of the release.
         required: true
-      is_draft:
+      is_draft: # if true, `delete_release` will be ignored
         type: boolean
         description: Whether to save the release as a draft.
         required: false
@@ -30,6 +30,7 @@ on:
         description: Whether to enable sourcemap in the build.
         required: false
         default: false
+      # if not, artifacts will be uploaded to the old release (though you select `is_draft`)
       delete_release:
         type: boolean
         description: Whether to delete the release with the same tag.
@@ -46,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete release
-        if: ${{ inputs.delete_release && !inputs.is_draft }}
+        if: ${{ inputs.delete_release }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

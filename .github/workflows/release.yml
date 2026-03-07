@@ -23,6 +23,11 @@ on:
         description: "Save as Draft"
         required: true
         default: true
+      delete_release:
+        type: boolean
+        description: "Delete duplicate release"
+        required: false
+        default: false
       prerelease:
         type: boolean
         description: "Pre-release"
@@ -31,11 +36,6 @@ on:
       enable_sourcemap:
         type: boolean
         description: "Enable sourcemap"
-        required: false
-        default: false
-      delete_release:
-        type: boolean
-        description: "Delete duplicate release"
         required: false
         default: false
 
