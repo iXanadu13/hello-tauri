@@ -59,7 +59,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete ${{ inputs.release_tag }} --yes --cleanup-tag || true
+          TAG="${{ inputs.release_tag }}"
+
+          # delete release if exists
+          gh release delete "$TAG" --yes || true
+
+          # delete tag if exists
+          gh api -X DELETE repos/${{ github.repository }}/git/refs/tags/"$TAG" || true
   
   publish-tauri:
     needs: [prepare]
