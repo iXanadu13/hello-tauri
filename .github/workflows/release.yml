@@ -14,9 +14,14 @@ on:
         required: false
       release_name:
         type: string
-        description: The name of the release.
+        description: "Release name"
         required: true
         default: "App v__VERSION__"
+      is_draft:
+        type: boolean
+        description: "Save as Draft"
+        required: true
+        default: true
       prerelease:
         type: boolean
         description: "Is pre-release"
@@ -42,6 +47,7 @@ jobs:
       app_version: ${{ inputs.version }}
       release_tag: ${{ inputs.release_tag != '' && inputs.release_tag || inputs.version }}
       release_name: ${{ inputs.release_name }}
+      is_draft: ${{ inputs.is_draft }}
       prerelease: ${{ inputs.prerelease }}
       enable_sourcemap: ${{ inputs.enable_sourcemap }}
     # secrets:

@@ -15,6 +15,11 @@ on:
         type: string
         description: The name of the release.
         required: true
+      is_draft:
+        type: boolean
+        description: Whether to save the release as a draft.
+        required: false
+        default: true
       prerelease:
         type: boolean
         description: Whether to make the release a prerelease.
@@ -110,7 +115,7 @@ jobs:
           tagName: '__VERSION__' # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: ${{ inputs.release_name }}
           releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true # 生成草稿，需要手动修改再发布
+          releaseDraft: ${{ inputs.is_draft }}
           prerelease: ${{ inputs.prerelease }}
           args: ${{ matrix.args }}
       #endregion
