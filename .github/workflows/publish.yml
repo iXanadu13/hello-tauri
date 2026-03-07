@@ -119,7 +119,7 @@ jobs:
         run: |
           gh release delete ${{ inputs.release_tag }} --yes --cleanup-tag || true
 
-      - uses: tauri-apps/tauri-action@v1 # see: https://github.com/tauri-apps/tauri-action
+      - uses: tauri-apps/tauri-action@v0 # see: https://github.com/tauri-apps/tauri-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

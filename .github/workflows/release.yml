@@ -25,7 +25,7 @@ on:
         default: true
       prerelease:
         type: boolean
-        description: "Is pre-release"
+        description: "Pre-release"
         required: false
         default: false
       enable_sourcemap:
