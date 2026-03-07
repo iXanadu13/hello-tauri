@@ -7,6 +7,10 @@ on:
         type: string
         description: The version of the app.
         required: true
+      app_version_msi:
+        type: string
+        description: The version of the app for Windows msi.
+        required: true
       release_tag:
         type: string
         description: The tag to use for the release.
@@ -74,7 +78,9 @@ jobs:
           - platform: 'ubuntu-22.04-arm'
             args: ''
           - platform: 'windows-latest'
-            args: ''
+            args: '--bundles msi'
+          - platform: 'windows-latest'
+            args: '--bundles nsis'
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -120,9 +126,16 @@ jobs:
       #endregion
 
       #region Edit config
-      - name: Set app version
+      - name: Set app version (exclude Windows msi)
+        if: matrix.platform != 'windows-latest' || matrix.args != '--bundles msi'
         run: |
           node ./.github/scripts/set-version.mjs ${{ inputs.app_version }}
+      
+      - name: Set app version (Windows msi)
+        if: matrix.platform == 'windows-latest' && matrix.args == '--bundles msi'
+        run: |
+          node ./.github/scripts/set-version.mjs ${{ inputs.app_version_msi }}
+      
       - name: Enable Source Map
         if: ${{ inputs.enable_sourcemap }}
         run: |

@@ -46,6 +46,7 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       app_version: ${{ inputs.version }}
+      app_version_msi: ${{ inputs.version }}
       release_tag: ${{ inputs.release_tag != '' && inputs.release_tag || inputs.version }}
       release_name: ${{ inputs.release_name }}
       is_draft: ${{ inputs.is_draft }}
