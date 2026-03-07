@@ -30,6 +30,10 @@ on:
         description: Whether to enable sourcemap in the build.
         required: false
         default: false
+      delete_release:
+        type: boolean
+        description: Whether to delete the release with the same tag.
+        required: true
     secrets:
       BUILD_ENV:
         description: "Environment variables to pass to `tauri build`. Format: `key1=value1\\nkey2=value2\\n...`."
@@ -108,11 +112,18 @@ jobs:
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm install # change this to npm or pnpm depending on which one you use.
 
-      - uses: tauri-apps/tauri-action@v0
+      - name: Delete release
+        if: inputs.delete_release == true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete ${{ inputs.release_tag }} --yes --cleanup-tag || true
+
+      - uses: tauri-apps/tauri-action@v1 # see: https://github.com/tauri-apps/tauri-action
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: '__VERSION__' # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          tagName: ${{ inputs.release_tag }}
           releaseName: ${{ inputs.release_name }}
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: ${{ inputs.is_draft }}

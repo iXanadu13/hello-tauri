@@ -12,6 +12,7 @@ on:
         type: string
         description: "Release tag (default: <version>)"
         required: false
+        # default: "__VERSION__"
       release_name:
         type: string
         description: "Release name"
@@ -32,11 +33,11 @@ on:
         description: "Enable sourcemap"
         required: false
         default: false
-      # delete_release:
-      #   type: boolean
-      #   description: "删除以前的release"
-      #   required: false
-      #   default: false
+      delete_release:
+        type: boolean
+        description: "Delete duplicate release"
+        required: false
+        default: false
 
 jobs:
   build:
@@ -50,5 +51,6 @@ jobs:
       is_draft: ${{ inputs.is_draft }}
       prerelease: ${{ inputs.prerelease }}
       enable_sourcemap: ${{ inputs.enable_sourcemap }}
+      delete_release: ${{ inputs.delete_release }}
     # secrets:
       
