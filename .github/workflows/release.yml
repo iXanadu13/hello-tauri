@@ -8,6 +8,15 @@ on:
         type: string
         description: "App version (x.y.z)"
         required: true
+      release_tag:
+        type: string
+        description: "Release tag (default: <version>)"
+        required: false
+      release_name:
+        type: string
+        description: The name of the release.
+        required: true
+        default: "App v__VERSION__"
       prerelease:
         type: boolean
         description: "Is pre-release"
@@ -15,7 +24,7 @@ on:
         default: false
       enable_sourcemap:
         type: boolean
-        description: Whether to enable sourcemap in the build.
+        description: "Enable sourcemap"
         required: false
         default: false
       # delete_release:
@@ -31,6 +40,8 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       app_version: ${{ inputs.version }}
+      release_tag: ${{ inputs.release_tag != '' && inputs.release_tag || inputs.version }}
+      release_name: ${{ inputs.release_name }}
       prerelease: ${{ inputs.prerelease }}
       enable_sourcemap: ${{ inputs.enable_sourcemap }}
     # secrets:
