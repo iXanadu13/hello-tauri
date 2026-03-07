@@ -8,16 +8,22 @@ const lastRelease = execSync(
   .toString()
   .trim();
 
-// 获取 Git 提交记录
-const commits = execSync(`git log ${lastRelease}.. --pretty=format:"%s" --reverse`).toString().trim();
+// 获取 commit
+let commits;
+
+if (lastRelease) {
+  // 有 tag
+  commits = run(`git log --pretty=format:"%s" --reverse ${lastRelease}..HEAD`);
+} else {
+  // 没有 tag，全部 commit
+  commits = run(`git log --pretty=format:"%s" --reverse`);
+}
 
 /**
- * 生成changelog（直接使用commit标题）
- * @param {string} commits - commit标题列表，用换行分隔
- * @returns {string} 格式化的changelog
+ * 生成 changelog
  */
 function generateChangelog(commits) {
-  if (!commits || commits.trim() === "") {
+  if (!commits) {
     return "## Changelog\n\nno commits found.";
   }
 
