@@ -40,7 +40,19 @@ on:
         required: false
 
 jobs:
+  cleanup-release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete release
+        if: inputs.delete_release == true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete ${{ inputs.release_tag }} --yes --cleanup-tag || true
   publish-tauri:
+    needs: [cleanup-release]
     permissions:
       contents: write
     strategy:
@@ -111,13 +123,6 @@ jobs:
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm install # change this to npm or pnpm depending on which one you use.
-
-      - name: Delete release
-        if: inputs.delete_release == true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release delete ${{ inputs.release_tag }} --yes --cleanup-tag || true
 
       - uses: tauri-apps/tauri-action@v0 # see: https://github.com/tauri-apps/tauri-action
         env:
