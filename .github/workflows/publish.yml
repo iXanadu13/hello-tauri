@@ -19,6 +19,10 @@ on:
         type: string
         description: The name of the release.
         required: true
+      release_notes:
+        type: string
+        description: The notes of the release.
+        required: false
       is_draft: # if true, `delete_release` will be ignored
         type: boolean
         description: Whether to save the release as a draft.
@@ -46,6 +50,8 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    outputs:
+      release_notes: ${{ steps.release_notes.outputs.notes }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -63,6 +69,23 @@ jobs:
 
           # delete tag if exists
           gh api -X DELETE repos/${{ github.repository }}/git/refs/tags/"$TAG" || true
+
+      - name: Prepare release notes
+        id: release_notes
+        run: |
+          if [ -n "${{ inputs.release_notes }}" ]; then
+            echo "Using provided release notes"
+            echo "notes<<EOF" >> $GITHUB_OUTPUT
+            echo "${{ inputs.release_notes }}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "Generating changelog"
+            CHANGELOG=$(node ./.github/scripts/generate-changelog.mjs)
+
+            echo "notes<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
   
   publish-tauri:
     needs: [prepare]
@@ -164,7 +187,7 @@ jobs:
         with:
           tagName: ${{ inputs.release_tag }}
           releaseName: ${{ inputs.release_name }}
-          releaseBody: 'See the assets to download this version and install.'
+          releaseBody: ${{ needs.prepare.outputs.release_notes }}
           releaseDraft: ${{ inputs.is_draft }}
           prerelease: ${{ inputs.prerelease }}
           args: ${{ matrix.args }}

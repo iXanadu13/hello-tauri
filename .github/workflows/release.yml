@@ -17,6 +17,10 @@ on:
         description: "Release name"
         required: true
         default: "App v__VERSION__"
+      release_notes:
+        type: string
+        description: "Release notes"
+        required: false
       is_draft:
         type: boolean
         description: "Save as Draft"
@@ -48,6 +52,7 @@ jobs:
       app_version_msi: ${{ inputs.version }}
       release_tag: ${{ inputs.release_tag != '' && inputs.release_tag || format('v{0}', inputs.version) }}
       release_name: ${{ inputs.release_name }}
+      release_notes: ${{ inputs.release_notes }}
       is_draft: ${{ inputs.is_draft }}
       prerelease: ${{ inputs.prerelease }}
       enable_sourcemap: ${{ inputs.enable_sourcemap }}
