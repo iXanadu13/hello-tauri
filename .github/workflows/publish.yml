@@ -56,6 +56,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release delete ${{ inputs.release_tag }} --yes --cleanup-tag || true
+  
   publish-tauri:
     needs: [cleanup-release]
     permissions:
@@ -98,6 +99,14 @@ jobs:
           node-version-file: .nvmrc
           cache: 'npm' # Set this to npm, yarn or pnpm.
 
+      - name: Setup Java + Maven && Cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: src-java/pom.xml
+
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable # Set this to dtolnay/rust-toolchain@nightly
         with:
@@ -128,6 +137,10 @@ jobs:
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm install # change this to npm or pnpm depending on which one you use.
+
+      - name: Maven build
+        working-directory: src-java
+        run: mvn -B -ntp clean compile # we don't need `package`
 
       - uses: tauri-apps/tauri-action@v0 # see: https://github.com/tauri-apps/tauri-action
         env:
