@@ -18,6 +18,10 @@ on:
         description: Whether to enable sourcemap in the build.
         required: false
         default: false
+    secrets:
+      BUILD_ENV:
+        description: "Environment variables to pass to `tauri build`. Format: `key1=value1\\nkey2=value2\\n...`."
+        required: false
 
 jobs:
   publish-tauri:
@@ -83,6 +87,11 @@ jobs:
           node ./.github/scripts/enable-sourcemap.mjs
       #endregion
 
+      #region Build
+      - name: Write BUILD_ENV to .env file
+        if: matrix.variant != 'foss'
+        run: |
+          echo "${{ secrets.BUILD_ENV }}" > .env
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         run: npm install # change this to npm or pnpm depending on which one you use.
@@ -97,3 +106,4 @@ jobs:
           releaseDraft: true # 生成草稿，需要手动修改再发布
           prerelease: ${{ inputs.prerelease }}
           args: ${{ matrix.args }}
+      #endregion

@@ -33,5 +33,5 @@ jobs:
       app_version: ${{ inputs.version }}
       prerelease: ${{ inputs.prerelease }}
       enable_sourcemap: ${{ inputs.enable_sourcemap }}
-    secrets:
+    # secrets:
       
