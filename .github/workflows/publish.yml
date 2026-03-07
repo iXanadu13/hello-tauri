@@ -1,10 +1,19 @@
 name: 'publish'
 
 on:
+  workflow_call:
+    inputs:
+      app_version:
+        type: string
+        description: The version of the app.
+        required: false
+        default: "0.0.0"
+      enable_sourcemap:
+        type: boolean
+        description: Whether to enable sourcemap in the build.
+        required: false
+        default: false
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   publish-tauri:
@@ -20,7 +29,7 @@ jobs:
             args: '--target x86_64-apple-darwin'
           - platform: 'ubuntu-22.04'
             args: ''
-          - platform: 'ubuntu-22.04-arm' # Only available in public repos.
+          - platform: 'ubuntu-22.04-arm'
             args: ''
           - platform: 'windows-latest'
             args: ''
@@ -29,6 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      #region Prepare env
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
@@ -57,6 +67,17 @@ jobs:
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './src-tauri -> target'
+      #endregion
+
+      #region Edit config
+      - name: Set app version
+        run: |
+          node ./.github/scripts/set-version.mjs ${{ inputs.app_version }}
+      - name: Enable Source Map
+        if: ${{ inputs.enable_sourcemap }}
+        run: |
+          node ./.github/scripts/enable-sourcemap.mjs
+      #endregion
 
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
@@ -66,9 +87,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          tagName: '__VERSION__' # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: 'App v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
+          releaseDraft: true # 生成草稿，需要手动修改再发布
           prerelease: false
           args: ${{ matrix.args }}
