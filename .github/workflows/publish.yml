@@ -8,12 +8,16 @@ on:
         description: The version of the app.
         required: false
         default: "0.0.0"
+      prerelease:
+        type: boolean
+        description: Whether to make the release a prerelease.
+        required: false
+        default: false
       enable_sourcemap:
         type: boolean
         description: Whether to enable sourcemap in the build.
         required: false
         default: false
-  workflow_dispatch:
 
 jobs:
   publish-tauri:
@@ -91,5 +95,5 @@ jobs:
           releaseName: 'App v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true # 生成草稿，需要手动修改再发布
-          prerelease: false
+          prerelease: ${{ inputs.prerelease }}
           args: ${{ matrix.args }}
