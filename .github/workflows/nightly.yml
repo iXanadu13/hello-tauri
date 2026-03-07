@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/publish.yml
     with:
       app_version: 0.0.0-nightly.${{ github.run_number }}
-      app_version_msi: 0.0.0-${{ github.run_number % 65536 }}
+      app_version_msi: 0.0.0-$(( ${{ github.run_number }} % 65536 ))
       release_tag: nightly
       release_name: nightly-${{ needs.prepare.outputs.date }}
       is_draft: false
