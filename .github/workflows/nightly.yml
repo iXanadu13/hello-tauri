@@ -1,0 +1,31 @@
+name: "nightly"
+run-name: "nightly ${{ github.run_number }}"
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+
+    steps:
+      - id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+  build:
+    needs: [prepare]
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish.yml
+    with:
+      app_version: 0.0.0-nightly.${{ github.run_number }}
+      release_tag: nightly
+      release_name: nightly-${{ needs.prepare.outputs.date }}
+      is_draft: false
+      prerelease: true
+      enable_sourcemap: true
+      delete_release: true
+    # secrets:

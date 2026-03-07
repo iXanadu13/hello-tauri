@@ -41,7 +41,7 @@ on:
         required: false
 
 jobs:
-  cleanup-release:
+  prepare:
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
           gh release delete ${{ inputs.release_tag }} --yes --cleanup-tag || true
   
   publish-tauri:
-    needs: [cleanup-release]
+    needs: [prepare]
     permissions:
       contents: write
     strategy:
