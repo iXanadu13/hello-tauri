@@ -1,12 +1,20 @@
 /* eslint-disable */
 import { execSync } from "child_process";
 
+function run(cmd) {
+  try {
+    return execSync(cmd, { stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
+  } catch {
+    throw Error(`failed to run command: ${cmd}`)
+  }
+}
+
 // 获取最近一次发布的标签
-const lastRelease = execSync(
+const lastRelease = run(
   "git for-each-ref --sort=-creatordate --format='%(refname:short)' \"refs/tags/v*\" | head -n 1",
 )
-  .toString()
-  .trim();
 
 // 获取 commit
 let commits;
