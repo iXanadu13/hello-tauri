@@ -8,11 +8,10 @@ on:
         type: string
         description: "App version (x.y.z)"
         required: true
-      release_tag:
+      release_tag: # don't use __VERSION__ here!
         type: string
-        description: "Release tag (default: <version>)"
+        description: "Release tag (default: v[x.y.z])"
         required: false
-        # default: "__VERSION__"
       release_name:
         type: string
         description: "Release name"
@@ -47,7 +46,7 @@ jobs:
     with:
       app_version: ${{ inputs.version }}
       app_version_msi: ${{ inputs.version }}
-      release_tag: ${{ inputs.release_tag != '' && inputs.release_tag || inputs.version }}
+      release_tag: ${{ inputs.release_tag != '' && inputs.release_tag || format('v{0}', inputs.version) }}
       release_name: ${{ inputs.release_name }}
       is_draft: ${{ inputs.is_draft }}
       prerelease: ${{ inputs.prerelease }}

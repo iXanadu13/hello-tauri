@@ -22,18 +22,15 @@ on:
       is_draft: # if true, `delete_release` will be ignored
         type: boolean
         description: Whether to save the release as a draft.
-        required: false
-        default: true
+        required: true
       prerelease:
         type: boolean
         description: Whether to make the release a prerelease.
-        required: false
-        default: false
+        required: true
       enable_sourcemap:
         type: boolean
         description: Whether to enable sourcemap in the build.
-        required: false
-        default: false
+        required: true
       # if not, artifacts will be uploaded to the old release (though you select `is_draft`)
       delete_release:
         type: boolean
