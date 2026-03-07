@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete release
-        if: inputs.delete_release == true
+        if: ${{ inputs.delete_release && !inputs.is_draft }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
