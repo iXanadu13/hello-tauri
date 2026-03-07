@@ -127,12 +127,12 @@ jobs:
 
       #region Edit config
       - name: Set app version (exclude Windows msi)
-        if: matrix.platform != 'windows-latest' || matrix.args != '--bundles msi'
+        if: matrix.args != '--bundles msi'
         run: |
           node ./.github/scripts/set-version.mjs ${{ inputs.app_version }}
       
       - name: Set app version (Windows msi)
-        if: matrix.platform == 'windows-latest' && matrix.args == '--bundles msi'
+        if: matrix.args == '--bundles msi'
         run: |
           node ./.github/scripts/set-version.mjs ${{ inputs.app_version_msi }}
       
