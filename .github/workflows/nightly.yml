@@ -2,8 +2,8 @@ name: "nightly"
 run-name: "nightly ${{ github.run_number }}"
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
+  # schedule:
+  #   - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
